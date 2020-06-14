@@ -7,7 +7,15 @@ const router = express.Router();
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
-  res.send("respond with a resource");
+  if (authenticate.verifyAdmin) {
+    User.find()
+      .then((user) => {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.json(user);
+      })
+      .catch((err) => next(err));
+  }
 });
 
 //endPoint
@@ -69,4 +77,5 @@ router.get("/logout", (req, res, next) => {
     return next(err);
   }
 });
+
 module.exports = router;

@@ -34,4 +34,30 @@ exports.jwtPassport = passport.use(
   }),
 );
 
+exports.jwtPassport = passport.use(
+  new JwtStrategy(opts, (jwt_payload, done) => {
+    console.log("JWT payload: ", jwt_payload);
+    User.findOne({ _id: jwt_payload._id }, (err, user) => {
+      if (err) {
+        return done(err, false);
+      } else if (user) {
+        return done(null, user);
+      } else {
+        return done(null, false);
+      }
+    });
+  }),
+);
+
 exports.verifyUser = passport.authenticate("jwt", { session: false });
+
+exports.verifyAdmin = (req, res, next) => {
+  if (req.user.admin) {
+    return next();
+  } else {
+    //Not an admin
+    const err = new Error("You are not authenticated!");
+    err.status = 401;
+    return next(err);
+  }
+};
