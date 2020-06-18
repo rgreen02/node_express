@@ -17,7 +17,7 @@ partnerRouter
       })
       .catch((err) => next(err));
   })
-  .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+  .post(authenticate.verifyUser, (req, res, next) => {
     Partner.create(req.body)
       .then((partner) => {
         if (
@@ -62,13 +62,13 @@ partnerRouter
       })
       .catch((err) => next(err));
   })
-  .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+  .post(authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
     res.end(
       `POST operation not supported on /partners/${req.params.partnerId}`,
     );
   })
-  .put(authenticate.verifyUser, (req, res, next) => {
+  .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Partner.findById(req.params.partnerId)
       .then((partner) => {
         if (partner) {
